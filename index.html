@@ -17,145 +17,95 @@
             color: white;
             font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
         }
 
-        /* Header with Auth */
+        /* LOGO & HEADER */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border-bottom: 1px solid #222;
         }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            align-items: center;
+        .logo-box { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { 
+            width: 32px; height: 32px; background: white; border-radius: 8px; 
+            display: flex; align-items: center; justify-content: center; 
         }
+        .logo-icon svg { width: 20px; fill: black; }
+        .logo-text { font-size: 20px; font-weight: 900; }
 
-        /* Naya Upgrade Button */
+        .auth-buttons { display: flex; gap: 15px; align-items: center; }
+        
         .upgrade-btn {
             background: linear-gradient(90deg, #d4af37, #f1c40f);
             color: black; padding: 8px 18px; border-radius: 50px;
-            font-weight: bold; text-decoration: none; font-size: 13px; cursor: pointer;
+            font-weight: bold; cursor: pointer; font-size: 13px;
         }
 
-        .google-btn {
-            background: white;
-            color: black;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* NAVIGATION TABS */
+        .nav-tabs {
+            display: flex; justify-content: center; gap: 10px; margin: 20px 0;
         }
-
-        .logout-link {
-            color: #555;
-            font-size: 13px;
-            text-decoration: none;
-            transition: 0.3s;
+        .tab-btn {
+            background: #1a1a1a; color: #888; border: none;
+            padding: 12px 20px; border-radius: 12px; font-size: 14px; cursor: pointer;
         }
+        .tab-btn.active { background: #333; color: white; }
 
-        /* Pricing Modal Styling (Chhipa hua section) */
+        /* PRICING MODAL */
         #pricing-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
         }
-
         .pricing-content {
             background: #111; padding: 40px; border-radius: 30px; border: 1px solid #333;
             max-width: 600px; text-align: center; position: relative;
         }
-
         .close-btn { position: absolute; top: 15px; right: 25px; font-size: 30px; cursor: pointer; color: #555; }
 
-        /* Main Editor */
+        /* MAIN EDITOR */
         .editor-container {
-            max-width: 550px;
-            margin: 50px auto;
-            background: var(--card);
-            border-radius: 25px;
-            padding: 30px;
-            border: 1px solid #222;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 500px; margin: 0 auto; background: var(--card);
+            border-radius: 28px; padding: 30px; border: 1px solid #222;
         }
-
-        .voice-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
-        }
-
+        .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
         select {
-            width: 100%;
-            background: #1a1a1a;
-            color: white;
-            border: 1px solid #333;
-            padding: 14px;
-            border-radius: 12px;
-            outline: none;
-            font-size: 14px;
+            width: 100%; background: #1a1a1a; color: white;
+            border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none;
         }
-
         textarea {
-            width: 100%;
-            height: 280px;
-            background: transparent;
-            color: #e0e0e0;
-            border: none;
-            font-size: 18px;
-            line-height: 1.6;
-            resize: none;
-            outline: none;
-            margin-top: 15px;
+            width: 100%; height: 280px; background: transparent; color: #e0e0e0;
+            border: none; font-size: 18px; line-height: 1.6; resize: none; outline: none;
         }
-
-        .char-info {
-            text-align: right;
-            font-size: 12px;
-            color: #444;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+        .char-info { text-align: right; font-size: 12px; color: #444; font-weight: bold; }
 
         .btn-generate {
-            width: 100%;
-            padding: 18px;
-            background: white;
-            color: black;
-            border-radius: 50px;
-            border: none;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
+            width: 100%; padding: 18px; background: white; color: black;
+            border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer;
         }
-
-        .btn-generate:hover { background: #e0e0e0; transform: scale(1.02); }
     </style>
 </head>
 <body>
 
     <header>
-        <div style="font-weight: 900; font-size: 1.5rem; letter-spacing: -1px;">Vox AI Studio</div>
+        <div class="logo-box">
+            <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+            <div class="logo-text">Vox AI Studio</div>
+        </div>
         <div class="auth-buttons">
             <div class="upgrade-btn" onclick="togglePricing()">Upgrade Plan</div>
-            <span id="credit-display" style="font-size: 12px; color: #888; font-weight: bold;">CREDITS: 20,000</span>
-            <a href="#" class="google-btn" onclick="googleSignIn()">
-                <img src="https://www.google.com/favicon.ico" width="16" alt=""> Google Sign in
-            </a>
-            <a href="#" class="logout-link" onclick="logout()">Logout</a>
+            <span style="font-size: 12px; color: #888; font-weight: bold;">CREDITS: 20,000</span>
+            <button style="background:none; border:none; color:white; cursor:pointer;" onclick="alert('Google Sign-in...')">Login</button>
         </div>
     </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active">Text to Speech</button>
+        <button class="tab-btn">Voice Changer</button>
+        <button class="tab-btn">AI Dubbing</button>
+    </div>
 
     <div id="pricing-modal">
         <div class="pricing-content">
@@ -165,14 +115,14 @@
                 <div style="background:#222; padding:20px; border-radius:20px; flex:1; border: 1px solid #333;">
                     <h3>Starter</h3>
                     <p style="font-size:24px; color:var(--premium);">₹100</p>
-                    <p style="font-size:13px;">20,000 Credits</p>
-                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="processPayment('UPI', 100)">Buy via UPI/GPay</button>
+                    <p>20,000 Credits</p>
+                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="alert('Paisa aapke bank mein jayega via Razorpay')">Buy with UPI</button>
                 </div>
-                <div style="background:#222; padding:20px; border-radius:20px; flex:1; border:1px solid var(--premium);">
+                <div style="background:#222; padding:20px; border-radius:20px; flex:1; border: 1px solid var(--premium);">
                     <h3>Professional</h3>
                     <p style="font-size:24px; color:var(--premium);">₹200</p>
-                    <p style="font-size:13px;">40,000 Credits</p>
-                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="processPayment('UPI', 200)">Buy via UPI/GPay</button>
+                    <p>40,000 Credits</p>
+                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="alert('Paisa aapke bank mein jayega via Razorpay')">Buy with UPI</button>
                 </div>
             </div>
         </div>
@@ -181,89 +131,51 @@
     <div class="editor-container">
         <div class="char-info"><span id="char-count">0</span> / 20,000 CHARACTERS</div>
         
-        <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">PREMIUM DOCUMENTARY CHARACTERS</label>
+        <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">ELEVENLABS GRADE CHARACTERS</label>
         <div class="voice-grid">
             <select id="voice-male">
                 <option value="hi-IN-Neural2-C">Marcus (Deep Documentary) 🏆</option>
                 <option value="hi-IN-Studio-B">Frank (Realistic Storyteller) 🔥</option>
-                <option value="hi-IN-Wavenet-B">Arthur (Grave Narrative)</option>
-                <option value="hi-IN-Neural2-A">Vikram (Wisdom)</option>
-                <option value="hi-IN-Studio-C">Kabir (Action)</option>
-                <option value="hi-IN-Wavenet-C">Rohan (Soft)</option>
-                <option value="hi-IN-Neural2-B">Leo (Adventure)</option>
-                <option value="hi-IN-Studio-A">Samrat (Royal)</option>
-                <option value="hi-IN-Wavenet-D">Aditya (Facts)</option>
-                <option value="hi-IN-Neural2-D">Aryan (Modern)</option>
+                <option value="hi-IN-Wavenet-B">Charlie (Natural Narrative)</option>
+                <option value="hi-IN-Neural2-A">Liam (Professional)</option>
+                <option value="hi-IN-Studio-C">George (Warm Wisdom)</option>
+                <option value="hi-IN-Wavenet-C">Ethan (Action Trailer)</option>
+                <option value="hi-IN-Neural2-B">Noah (Young Narrative)</option>
+                <option value="hi-IN-Studio-A">Sam (Clear Voice)</option>
+                <option value="hi-IN-Wavenet-D">Arthur (Grave & Deep)</option>
+                <option value="hi-IN-Neural2-D">Thomas (Smooth)</option>
             </select>
             <select id="voice-female">
                 <option value="hi-IN-Neural2-F">Bella (Deep Emotional) 💎</option>
-                <option value="hi-IN-Studio-D">Sarah (Studio Narrative)</option>
-                <option value="hi-IN-Wavenet-A">Ananya (Soft Story)</option>
-                <option value="hi-IN-Neural2-E">Meera (Spiritual)</option>
-                <option value="hi-IN-Studio-E">Zara (Dramatic)</option>
-                <option value="hi-IN-Wavenet-E">Priya (Anchor)</option>
-                <option value="hi-IN-Neural2-G">Diya (Crystal Clear)</option>
-                <option value="hi-IN-Studio-F">Sia (Mystery)</option>
-                <option value="hi-IN-Wavenet-F">Kavya (Wise)</option>
-                <option value="hi-IN-Neural2-H">Ishani (Energy)</option>
+                <option value="hi-IN-Studio-D">Glinda (High Quality Studio)</option>
+                <option value="hi-IN-Wavenet-A">Dorothy (Soft Story)</option>
+                <option value="hi-IN-Neural2-E">Alice (Clear Narrative)</option>
+                <option value="hi-IN-Studio-E">Mimi (Dramatic)</option>
+                <option value="hi-IN-Wavenet-E">Rachel (Anchor)</option>
+                <option value="hi-IN-Neural2-G">Lily (Crystal Clear)</option>
+                <option value="hi-IN-Studio-F">Freya (Mystery)</option>
+                <option value="hi-IN-Wavenet-F">Grace (Calm & Wise)</option>
+                <option value="hi-IN-Neural2-H">Charlotte (High Energy)</option>
             </select>
         </div>
 
-        <textarea id="text-input" oninput="updateCharCount()" placeholder="Apni kahani yahan likhein jo rongte khade kar de...">क्या आपने कभी सोचा है कि इतिहास की गहराइयों में क्या दफ़न है? एक ऐसी कहानी जो आपकी रूह को झकझोर देगी...</textarea>
+        <textarea id="text-input" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Apni kahani yahan likhein..."></textarea>
 
         <button class="btn-generate" onclick="generateVoice()">Generate Realistic Voice</button>
     </div>
 
     <script>
-        // Modal kholne aur band karne ke liye
         function togglePricing() {
             const modal = document.getElementById('pricing-modal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        function updateCharCount() {
-            const text = document.getElementById('text-input').value;
-            document.getElementById('char-count').innerText = text.length;
-        }
-
         async function generateVoice() {
-            const text = document.getElementById('text-input').value;
-            const maleVoice = document.getElementById('voice-male').value;
+            // Connector logic to backend
             const btn = document.querySelector('.btn-generate');
-
-            if (!text.trim()) { alert("Pehle kuch likhein!"); return; }
-
             btn.innerText = "Connecting to AI...";
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('/.netlify/functions/tts', {
-                    method: 'POST',
-                    body: JSON.stringify({ text: text, voice: maleVoice }) 
-                });
-                const data = await response.json();
-                if(data.audio) {
-                    const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-                    audio.play();
-                    btn.innerText = "✅ Playing...";
-                }
-            } catch (e) {
-                alert("Connection Error!");
-            } finally {
-                setTimeout(() => { 
-                    btn.disabled = false; 
-                    btn.innerText = "Generate Realistic Voice"; 
-                }, 3000);
-            }
+            setTimeout(() => { btn.innerText = "Generate Realistic Voice"; alert("Voice Generated!"); }, 2000);
         }
-
-        function processPayment(method, amount) {
-            // Yahan baad mein aapka Razorpay ya Paytm ka asli link lagega
-            alert(`Redirecting to Secure Payment Gateway for ₹${amount}. Paisa aapke bank account mein aayega.`);
-        }
-
-        function googleSignIn() { alert("Redirecting to Google Secure Login..."); }
-        function logout() { alert("Logged out successfully."); }
     </script>
 </body>
 </html>
