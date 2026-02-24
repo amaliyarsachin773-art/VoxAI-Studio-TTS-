@@ -85,6 +85,13 @@
             width: 100%; padding: 18px; background: white; color: black;
             border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer;
         }
+
+        /* NEW: UPLOAD BOX FOR DUBBING/CHANGER */
+        .upload-area {
+            border: 2px dashed #333; padding: 30px; text-align: center; border-radius: 20px;
+            margin-top: 15px; cursor: pointer; background: rgba(255,255,255,0.02);
+        }
+        .upload-area:hover { border-color: var(--premium); }
     </style>
 </head>
 <body>
@@ -102,9 +109,9 @@
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active">Text to Speech</button>
-        <button class="tab-btn">Voice Changer</button>
-        <button class="tab-btn">AI Dubbing</button>
+        <button class="tab-btn active" onclick="switchTab('tts', this)">Text to Speech</button>
+        <button class="tab-btn" onclick="switchTab('change', this)">Voice Changer</button>
+        <button class="tab-btn" onclick="switchTab('dub', this)">AI Dubbing</button>
     </div>
 
     <div id="pricing-modal">
@@ -129,40 +136,57 @@
     </div>
 
     <div class="editor-container">
-        <div class="char-info"><span id="char-count">0</span> / 20,000 CHARACTERS</div>
-        
-        <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">ELEVENLABS GRADE CHARACTERS</label>
-        <div class="voice-grid">
-            <select id="voice-male">
-                <option value="hi-IN-Neural2-C">Marcus (Deep Documentary) 🏆</option>
-                <option value="hi-IN-Studio-B">Frank (Realistic Storyteller) 🔥</option>
-                <option value="hi-IN-Wavenet-B">Charlie (Natural Narrative)</option>
-                <option value="hi-IN-Neural2-A">Liam (Professional)</option>
-                <option value="hi-IN-Studio-C">George (Warm Wisdom)</option>
-                <option value="hi-IN-Wavenet-C">Ethan (Action Trailer)</option>
-                <option value="hi-IN-Neural2-B">Noah (Young Narrative)</option>
-                <option value="hi-IN-Studio-A">Sam (Clear Voice)</option>
-                <option value="hi-IN-Wavenet-D">Arthur (Grave & Deep)</option>
-                <option value="hi-IN-Neural2-D">Thomas (Smooth)</option>
-            </select>
-            <select id="voice-female">
-                <option value="hi-IN-Neural2-F">Bella (Deep Emotional) 💎</option>
-                <option value="hi-IN-Studio-D">Glinda (High Quality Studio)</option>
-                <option value="hi-IN-Wavenet-A">Dorothy (Soft Story)</option>
-                <option value="hi-IN-Neural2-E">Alice (Clear Narrative)</option>
-                <option value="hi-IN-Studio-E">Mimi (Dramatic)</option>
-                <option value="hi-IN-Wavenet-E">Rachel (Anchor)</option>
-                <option value="hi-IN-Neural2-G">Lily (Crystal Clear)</option>
-                <option value="hi-IN-Studio-F">Freya (Mystery)</option>
-                <option value="hi-IN-Wavenet-F">Grace (Calm & Wise)</option>
-                <option value="hi-IN-Neural2-H">Charlotte (High Energy)</option>
-            </select>
+        <div id="tts-section">
+            <div class="char-info"><span id="char-count">0</span> / 20,000 CHARACTERS</div>
+            <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">ELEVENLABS GRADE CHARACTERS</label>
+            <div class="voice-grid">
+                <select id="voice-male">
+                    <option value="hi-IN-Neural2-C">Marcus (Deep Documentary) 🏆</option>
+                    <option value="hi-IN-Studio-B">Frank (Realistic Storyteller) 🔥</option>
+                    <option value="hi-IN-Wavenet-B">Charlie (Natural Narrative)</option>
+                    <option value="hi-IN-Neural2-A">Liam (Professional)</option>
+                </select>
+                <select id="voice-female">
+                    <option value="hi-IN-Neural2-F">Bella (Deep Emotional) 💎</option>
+                    <option value="hi-IN-Studio-D">Glinda (High Quality Studio)</option>
+                </select>
+            </div>
+            <textarea id="text-input" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Apni kahani yahan likhein..."></textarea>
+            <button class="btn-generate" onclick="generateVoice()">Generate Realistic Voice</button>
         </div>
 
-        <textarea id="text-input" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Apni kahani yahan likhein..."></textarea>
+        <div id="upload-section" style="display:none;">
+            <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">AI DUBBING & VOICE CHANGER</label>
+            
+            <select id="dub-language" style="margin-top:15px;">
+                <option disabled selected>Select Target Language (15+ Options)</option>
+                <optgroup label="India (Popular 8)">
+                    <option value="hi">Hindi</option><option value="bn">Bengali</option>
+                    <option value="mr">Marathi</option><option value="ta">Tamil</option>
+                    <option value="te">Telugu</option><option value="gu">Gujarati</option>
+                    <option value="kn">Kannada</option><option value="ml">Malayalam</option>
+                </optgroup>
+                <optgroup label="Foreign (Most Popular 7)">
+                    <option value="en">English (US/UK)</option><option value="es">Spanish</option>
+                    <option value="fr">French</option><option value="de">German</option>
+                    <option value="ja">Japanese</option><option value="ar">Arabic</option>
+                    <option value="ru">Russian</option>
+                </optgroup>
+            </select>
 
-        <button class="btn-generate" onclick="generateVoice()">Generate Realistic Voice</button>
+            <div class="upload-area" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" hidden onchange="handleFileUpload(this)" accept="audio/*,video/*">
+                <div style="font-size: 30px; margin-bottom: 10px;">📁</div>
+                <div style="font-weight: bold;">Click to Upload File</div>
+                <div style="font-size: 12px; color: #555; margin-top: 5px;">Supported: Audio/Video (Max 50MB)</div>
+                <div id="file-name" style="margin-top:10px; color:var(--premium); font-size:13px;"></div>
+            </div>
+
+            <button class="btn-generate" style="margin-top:20px;" onclick="processUpload()">Process with AI</button>
+        </div>
     </div>
+
+    
 
     <script>
         function togglePricing() {
@@ -170,11 +194,44 @@
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        // Tab Switching Logic
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            if(tab === 'tts') {
+                document.getElementById('tts-section').style.display = 'block';
+                document.getElementById('upload-section').style.display = 'none';
+            } else {
+                document.getElementById('tts-section').style.display = 'none';
+                document.getElementById('upload-section').style.display = 'block';
+            }
+        }
+
+        // 50MB Size Validation
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            
+            if (file) {
+                if (file.size > maxSize) {
+                    alert("Error: File size 50MB se zyada hai. Chhoti file upload karein.");
+                    input.value = "";
+                    document.getElementById('file-name').innerText = "";
+                } else {
+                    document.getElementById('file-name').innerText = "Selected: " + file.name;
+                }
+            }
+        }
+
         async function generateVoice() {
-            // Connector logic to backend
             const btn = document.querySelector('.btn-generate');
             btn.innerText = "Connecting to AI...";
             setTimeout(() => { btn.innerText = "Generate Realistic Voice"; alert("Voice Generated!"); }, 2000);
+        }
+
+        function processUpload() {
+            alert("AI Processing shuru ho rahi hai... 50MB check complete!");
         }
     </script>
 </body>
