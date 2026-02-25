@@ -5,233 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vox AI Studio - Professional Documentary TTS</title>
     <style>
-        :root {
-            --bg: #050505;
-            --card: #0f0f0f;
-            --accent: #ffffff;
-            --premium: #d4af37;
-        }
+        :root { --bg: #050505; --card: #0f0f0f; --accent: #ffffff; --premium: #d4af37; }
+        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Inter', -apple-system, sans-serif;
-            margin: 0;
-            padding: 10px;
-        }
-
-        /* LOGO & HEADER */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 25px;
-            border-bottom: 1px solid #222;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid #222; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
-        .logo-icon { 
-            width: 32px; height: 32px; background: white; border-radius: 8px; 
-            display: flex; align-items: center; justify-content: center; 
-        }
-        .logo-icon svg { width: 20px; fill: black; }
+        .logo-icon { width: 32px; height: 32px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
         .logo-text { font-size: 20px; font-weight: 900; }
 
-        .auth-buttons { display: flex; gap: 15px; align-items: center; }
-        
-        .upgrade-btn {
-            background: linear-gradient(90deg, #d4af37, #f1c40f);
-            color: black; padding: 8px 18px; border-radius: 50px;
-            font-weight: bold; cursor: pointer; font-size: 13px;
-        }
-
-        /* NAVIGATION TABS */
-        .nav-tabs {
-            display: flex; justify-content: center; gap: 10px; margin: 20px 0;
-        }
-        .tab-btn {
-            background: #1a1a1a; color: #888; border: none;
-            padding: 12px 20px; border-radius: 12px; font-size: 14px; cursor: pointer;
-        }
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
+        .tab-btn { background: #1a1a1a; color: #888; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; }
         .tab-btn.active { background: #333; color: white; }
 
-        /* PRICING MODAL */
-        #pricing-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;
-        }
-        .pricing-content {
-            background: #111; padding: 40px; border-radius: 30px; border: 1px solid #333;
-            max-width: 600px; text-align: center; position: relative;
-        }
-        .close-btn { position: absolute; top: 15px; right: 25px; font-size: 30px; cursor: pointer; color: #555; }
-
-        /* MAIN EDITOR */
-        .editor-container {
-            max-width: 500px; margin: 0 auto; background: var(--card);
-            border-radius: 28px; padding: 30px; border: 1px solid #222;
-        }
+        .editor-container { max-width: 500px; margin: 0 auto; background: var(--card); border-radius: 28px; padding: 30px; border: 1px solid #222; }
         .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        select {
-            width: 100%; background: #1a1a1a; color: white;
-            border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none;
-        }
-        textarea {
-            width: 100%; height: 280px; background: transparent; color: #e0e0e0;
-            border: none; font-size: 18px; line-height: 1.6; resize: none; outline: none;
-        }
-        .char-info { text-align: right; font-size: 12px; color: #444; font-weight: bold; }
+        select, textarea { width: 100%; background: #1a1a1a; color: white; border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none; }
+        textarea { height: 250px; font-size: 16px; resize: none; margin-top: 15px; }
 
-        .btn-generate {
-            width: 100%; padding: 18px; background: white; color: black;
-            border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer;
-        }
+        .btn-main { width: 100%; padding: 18px; background: white; color: black; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; }
+        .btn-main:disabled { background: #333; color: #777; cursor: not-allowed; }
 
-        /* NEW: UPLOAD BOX FOR DUBBING/CHANGER */
-        .upload-area {
-            border: 2px dashed #333; padding: 30px; text-align: center; border-radius: 20px;
-            margin-top: 15px; cursor: pointer; background: rgba(255,255,255,0.02);
-        }
-        .upload-area:hover { border-color: var(--premium); }
+        .upload-area { border: 2px dashed #333; padding: 40px; text-align: center; border-radius: 20px; margin-top: 15px; cursor: pointer; }
+        .upload-area.error { border-color: #ff4444; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo-box">
-            <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+            <div class="logo-icon"><svg viewBox="0 0 24 24" width="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
             <div class="logo-text">Vox AI Studio</div>
         </div>
-        <div class="auth-buttons">
-            <div class="upgrade-btn" onclick="togglePricing()">Upgrade Plan</div>
-            <span style="font-size: 12px; color: #888; font-weight: bold;">CREDITS: 20,000</span>
-            <button style="background:none; border:none; color:white; cursor:pointer;" onclick="alert('Google Sign-in...')">Login</button>
+        <div style="display:flex; align-items:center; gap:15px;">
+            <span style="color:var(--premium); font-weight:bold; font-size:12px;">CREDITS: 20,000</span>
         </div>
     </header>
 
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('tts', this)">Text to Speech</button>
-        <button class="tab-btn" onclick="switchTab('change', this)">Voice Changer</button>
         <button class="tab-btn" onclick="switchTab('dub', this)">AI Dubbing</button>
-    </div>
-
-    <div id="pricing-modal">
-        <div class="pricing-content">
-            <span class="close-btn" onclick="togglePricing()">&times;</span>
-            <h2 style="color:var(--premium);">Choose Your Plan</h2>
-            <div style="display:flex; gap:20px; margin-top:30px;">
-                <div style="background:#222; padding:20px; border-radius:20px; flex:1; border: 1px solid #333;">
-                    <h3>Starter</h3>
-                    <p style="font-size:24px; color:var(--premium);">₹100</p>
-                    <p>20,000 Credits</p>
-                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="alert('Paisa aapke bank mein jayega via Razorpay')">Buy with UPI</button>
-                </div>
-                <div style="background:#222; padding:20px; border-radius:20px; flex:1; border: 1px solid var(--premium);">
-                    <h3>Professional</h3>
-                    <p style="font-size:24px; color:var(--premium);">₹200</p>
-                    <p>40,000 Credits</p>
-                    <button style="width:100%; padding:10px; border-radius:10px; cursor:pointer;" onclick="alert('Paisa aapke bank mein jayega via Razorpay')">Buy with UPI</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="editor-container">
         <div id="tts-section">
-            <div class="char-info"><span id="char-count">0</span> / 20,000 CHARACTERS</div>
-            <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">ELEVENLABS GRADE CHARACTERS</label>
+            <div style="font-size: 11px; color: #555; font-weight: bold;">STUDIO QUALITY AI VOICES</div>
             <div class="voice-grid">
-                <select id="voice-male">
-                    <option value="hi-IN-Neural2-C">Marcus (Deep Documentary) 🏆</option>
-                    <option value="hi-IN-Studio-B">Frank (Realistic Storyteller) 🔥</option>
-                    <option value="hi-IN-Wavenet-B">Charlie (Natural Narrative)</option>
+                <select id="male-select">
+                    <option value="hi-IN-Neural2-C">Marcus (Deep Documentary)</option>
+                    <option value="hi-IN-Studio-B">Frank (Realistic Story)</option>
+                    <option value="hi-IN-Wavenet-B">Charlie (Natural)</option>
                     <option value="hi-IN-Neural2-A">Liam (Professional)</option>
+                    <option value="hi-IN-Studio-C">George (Warm)</option>
+                    <option value="hi-IN-Wavenet-C">Ethan (Action)</option>
+                    <option value="hi-IN-Neural2-B">Noah (Young)</option>
+                    <option value="hi-IN-Studio-A">Sam (Clear)</option>
+                    <option value="hi-IN-Wavenet-D">Arthur (Grave)</option>
+                    <option value="hi-IN-Neural2-D">Thomas (Smooth)</option>
                 </select>
-                <select id="voice-female">
-                    <option value="hi-IN-Neural2-F">Bella (Deep Emotional) 💎</option>
-                    <option value="hi-IN-Studio-D">Glinda (High Quality Studio)</option>
+                <select id="female-select">
+                    <option value="hi-IN-Neural2-F">Bella (Emotional)</option>
+                    <option value="hi-IN-Studio-D">Glinda (High Quality)</option>
+                    <option value="hi-IN-Wavenet-A">Dorothy (Soft)</option>
+                    <option value="hi-IN-Neural2-E">Alice (Narrative)</option>
+                    <option value="hi-IN-Studio-E">Mimi (Dramatic)</option>
+                    <option value="hi-IN-Wavenet-E">Rachel (Anchor)</option>
+                    <option value="hi-IN-Neural2-G">Lily (Crystal)</option>
+                    <option value="hi-IN-Studio-F">Freya (Mystery)</option>
+                    <option value="hi-IN-Wavenet-F">Grace (Calm)</option>
+                    <option value="hi-IN-Neural2-H">Charlotte (Energy)</option>
                 </select>
             </div>
-            <textarea id="text-input" oninput="document.getElementById('char-count').innerText = this.value.length" placeholder="Apni kahani yahan likhein..."></textarea>
-            <button class="btn-generate" onclick="generateVoice()">Generate Realistic Voice</button>
+            <textarea id="text-input" placeholder="Yahan apni kahani likhein..."></textarea>
+            <button class="btn-main" onclick="generateVoice()">Generate Realistic Voice</button>
         </div>
 
-        <div id="upload-section" style="display:none;">
-            <label style="font-size: 11px; color: #555; font-weight: bold; letter-spacing: 1px;">AI DUBBING & VOICE CHANGER</label>
-            
-            <select id="dub-language" style="margin-top:15px;">
-                <option disabled selected>Select Target Language (15+ Options)</option>
-                <optgroup label="India (Popular 8)">
-                    <option value="hi">Hindi</option><option value="bn">Bengali</option>
-                    <option value="mr">Marathi</option><option value="ta">Tamil</option>
-                    <option value="te">Telugu</option><option value="gu">Gujarati</option>
-                    <option value="kn">Kannada</option><option value="ml">Malayalam</option>
-                </optgroup>
-                <optgroup label="Foreign (Most Popular 7)">
-                    <option value="en">English (US/UK)</option><option value="es">Spanish</option>
-                    <option value="fr">French</option><option value="de">German</option>
-                    <option value="ja">Japanese</option><option value="ar">Arabic</option>
-                    <option value="ru">Russian</option>
-                </optgroup>
+        <div id="dub-section" style="display:none;">
+            <div style="font-size: 11px; color: #555; font-weight: bold;">AI VIDEO DUBBING (MAX 50MB)</div>
+            <select id="target-lang" style="margin-top:10px;">
+                <option value="hi">Hindi</option><option value="en">English</option>
+                <option value="bn">Bengali</option><option value="mr">Marathi</option>
+                <option value="ta">Tamil</option><option value="te">Telugu</option>
+                <option value="gu">Gujarati</option><option value="kn">Kannada</option>
+                <option value="ml">Malayalam</option><option value="es">Spanish</option>
+                <option value="fr">French</option><option value="ja">Japanese</option>
+                <option value="ru">Russian</option><option value="ar">Arabic</option>
+                <option value="de">German</option>
             </select>
 
-            <div class="upload-area" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" hidden onchange="handleFileUpload(this)" accept="audio/*,video/*">
-                <div style="font-size: 30px; margin-bottom: 10px;">📁</div>
-                <div style="font-weight: bold;">Click to Upload File</div>
-                <div style="font-size: 12px; color: #555; margin-top: 5px;">Supported: Audio/Video (Max 50MB)</div>
-                <div id="file-name" style="margin-top:10px; color:var(--premium); font-size:13px;"></div>
+            <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
+                <input type="file" id="file-input" hidden onchange="validateAndUpload(this)" accept="video/*,audio/*">
+                <div style="font-size: 40px;">📂</div>
+                <div id="upload-text" style="font-weight:bold; margin-top:10px;">Click to Upload</div>
+                <div style="font-size: 11px; color:#666;">Maximum allowed: 50MB</div>
             </div>
-
-            <button class="btn-generate" style="margin-top:20px;" onclick="processUpload()">Process with AI</button>
+            <button class="btn-main" id="process-btn" disabled onclick="startProcessing()">Start Dubbing Now</button>
         </div>
     </div>
 
-    
-
     <script>
-        function togglePricing() {
-            const modal = document.getElementById('pricing-modal');
-            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-        }
-
-        // Tab Switching Logic
-        function switchTab(tab, btn) {
+        function switchTab(mode, btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
-            if(tab === 'tts') {
-                document.getElementById('tts-section').style.display = 'block';
-                document.getElementById('upload-section').style.display = 'none';
-            } else {
-                document.getElementById('tts-section').style.display = 'none';
-                document.getElementById('upload-section').style.display = 'block';
-            }
+            document.getElementById('tts-section').style.display = (mode === 'tts') ? 'block' : 'none';
+            document.getElementById('dub-section').style.display = (mode === 'dub') ? 'block' : 'none';
         }
 
-        // 50MB Size Validation
-        function handleFileUpload(input) {
+        // STRICT 50MB BLOCKING
+        function validateAndUpload(input) {
             const file = input.files[0];
-            const maxSize = 50 * 1024 * 1024; // 50MB
-            
+            const area = document.getElementById('drop-zone');
+            const status = document.getElementById('upload-text');
+            const btn = document.getElementById('process-btn');
+
             if (file) {
-                if (file.size > maxSize) {
-                    alert("Error: File size 50MB se zyada hai. Chhoti file upload karein.");
+                if (file.size > 50 * 1024 * 1024) { // 50MB Check
+                    alert("⚠️ Strict Block: File 50MB se badi hai! Upload allowed nahi hai.");
                     input.value = "";
-                    document.getElementById('file-name').innerText = "";
+                    area.classList.add('error');
+                    status.innerText = "File Too Large (Rejected)";
+                    btn.disabled = true;
                 } else {
-                    document.getElementById('file-name').innerText = "Selected: " + file.name;
+                    area.classList.remove('error');
+                    status.innerText = "Selected: " + file.name;
+                    btn.disabled = false; // Sirf tabhi button chalega jab file 50MB se chhoti ho
                 }
             }
         }
 
+        // REAL VOICE GENERATION (No Dummy Alerts)
         async function generateVoice() {
-            const btn = document.querySelector('.btn-generate');
-            btn.innerText = "Connecting to AI...";
-            setTimeout(() => { btn.innerText = "Generate Realistic Voice"; alert("Voice Generated!"); }, 2000);
+            const text = document.getElementById('text-input').value;
+            const voice = document.getElementById('male-select').value; // Default to male for test
+            const btn = document.querySelector('#tts-section .btn-main');
+
+            if (!text.trim()) return alert("Pehle kuch likhein!");
+
+            btn.innerText = "AI is Speaking...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/.netlify/functions/tts', {
+                    method: 'POST',
+                    body: JSON.stringify({ text, voice })
+                });
+                const data = await response.json();
+                
+                if (data.audio) {
+                    const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
+                    audio.play();
+                    btn.innerText = "✅ Playing...";
+                }
+            } catch (e) {
+                alert("Server Connection Failed! Check Netlify Key.");
+            } finally {
+                setTimeout(() => { btn.disabled = false; btn.innerText = "Generate Realistic Voice"; }, 3000);
+            }
         }
 
-        function processUpload() {
-            alert("AI Processing shuru ho rahi hai... 50MB check complete!");
+        function startProcessing() {
+            alert("Dubbing started! Processing your 50MB file...");
         }
     </script>
 </body>
