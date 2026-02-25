@@ -1,32 +1,34 @@
-const textToSpeech = require('@google-cloud/text-to-speech');
-const client = new textToSpeech.TextToSpeechClient();
+async function generateVoice() {
+    const text = document.getElementById("text-input").value;
+    const voice = document.getElementById("voice-male").value;
 
-exports.handler = async (event) => {
-    if (event.httpMethod !== "POST") return { statusCode: 405, body: "Method Not Allowed" };
+    if (!text.trim()) {
+        alert("Text likho");
+        return;
+    }
 
-    const { text, voice } = JSON.parse(event.body);
-
-    const request = {
-        input: { text: text },
-        voice: { 
-            languageCode: 'hi-IN', 
-            name: voice, // Marcus/Frank ka code yahan aayega
-            ssmlGender: 'MALE' 
-        },
-        audioConfig: { 
-            audioEncoding: 'MP3',
-            speakingRate: 0.90, // Thoda slow taki documentary feel aaye
-            pitch: -2.0 // Deep voice ke liye
-        },
-    };
+    const btn = document.querySelector(".btn-generate");
+    btn.innerText = "Generating...";
 
     try {
-        const [response] = await client.synthesizeSpeech(request);
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ audio: response.audioContent.toString('base64') }),
-        };
-    } catch (err) {
-        return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
+        const res = await fetch("/.netlify/functions/tts", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text, voice }),
+        });
+
+        if (!res.ok) throw new Error("TTS server error");
+
+        const data = await res.json();
+
+        const audio = new Audio("data:audio/mp3;base64," + data.audio);
+        audio.play();
+
+    } catch (e) {
+        alert("Error: " + e.message);
     }
-};
+
+    btn.innerText = "Generate Realistic Voice";
+}
