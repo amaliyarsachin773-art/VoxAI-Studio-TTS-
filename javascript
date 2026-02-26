@@ -1,59 +1,60 @@
-// 100% FREE BROWSER VOICE TEST (No API Key, No Billing Required)
-function generateVoice() {
-    const textInput = document.getElementById('text-input');
-    const text = textInput.value;
-    const btn = document.querySelector('#tts-section .btn-main');
+const axios = require('axios');
 
-    // Agar text khali hai toh alert do
-    if (!text.trim()) {
-        alert("Pehle apni kahani likhein!");
-        return;
+// Wait karne ke liye ek chota function
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+exports.handler = async (event) => {
+    // Ye aapki key ko Netlify ke safe locker se nikalega
+    const API_KEY = process.env.CAMB_API_KEY;
+
+    if (!API_KEY) {
+        return { statusCode: 500, body: JSON.stringify({ error: "Netlify mein CAMB_API_KEY save nahi hai!" }) };
     }
-
-    // Check karein ki browser free voice support karta hai ya nahi
-    if (!('speechSynthesis' in window)) {
-        alert("Sorry bhai, aapka browser free voice support nahi karta. Chrome use karein.");
-        return;
-    }
-
-    // Button ka text change karein
-    btn.innerText = "Generating Free Voice...";
-    btn.disabled = true;
 
     try {
-        // Pehle se chal rahi koi awaaz band karein
-        window.speechSynthesis.cancel();
+        const { text } = JSON.parse(event.body);
 
-        // Nayi awaaz banayein
-        const utterance = new SpeechSynthesisUtterance(text);
-        
-        // Hindi language set karne ki koshish (Browser par depend karega)
-        utterance.lang = 'hi-IN'; 
-        
-        // Speed set karein (agar dropdown hai, nahi toh normal speed)
-        const speed = parseFloat(document.getElementById('voice-speed')?.value || 1.0);
-        utterance.rate = speed;
+        // 1. Camb AI ko text bhejna
+        const initRes = await axios.post("https://client.camb.ai/apis/tts", 
+            { text: text, voice_id: 147320, language: 1, gender: 1 },
+            { headers: { "x-api-key": API_KEY } }
+        );
 
-        // Jab awaaz khatam ho jaye toh button wapas normal kar dein
-        utterance.onend = function() {
-            btn.disabled = false;
-            btn.innerText = "Generate Realistic Voice";
+        const taskId = initRes.data.task_id;
+        let runId = null;
+
+        // 2. Audio banne ka wait karna (Polling - Max 8 seconds)
+        for (let i = 0; i < 4; i++) {
+            await delay(2000); 
+            const statusRes = await axios.get(`https://client.camb.ai/apis/tts/${taskId}`, {
+                headers: { "x-api-key": API_KEY }
+            });
+            
+            if (statusRes.data.status === "SUCCESS") {
+                runId = statusRes.data.run_id;
+                break;
+            } else if (statusRes.data.status === "FAILED") {
+                throw new Error("Camb AI API Error");
+            }
+        }
+
+        if (!runId) throw new Error("Awaaz banne mein time lag raha hai.");
+
+        // 3. Chupchap Audio file download karke Frontend ko bhejna (Key yahan bhi safe hai)
+        const audioRes = await axios.get(`https://client.camb.ai/apis/tts-result/${runId}`, {
+            headers: { "x-api-key": API_KEY },
+            responseType: 'arraybuffer'
+        });
+
+        // Audio ko base64 mein convert karna taaki HTML play kar sake
+        const base64Audio = Buffer.from(audioRes.data, 'binary').toString('base64');
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ audio: base64Audio }),
         };
 
-        // Agar koi error aaye
-        utterance.onerror = function() {
-            btn.disabled = false;
-            btn.innerText = "Generate Realistic Voice";
-            alert("Awaaz play karne mein dikkat aayi.");
-        };
-
-        // Awaaz play karein!
-        window.speechSynthesis.speak(utterance);
-        btn.innerText = "✅ Playing (Free Browser Voice)...";
-
-    } catch (e) {
-        alert("Error: " + e.message);
-        btn.disabled = false;
-        btn.innerText = "Generate Realistic Voice";
+    } catch (error) {
+        return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
     }
-}
+};
