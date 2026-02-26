@@ -1,89 +1,59 @@
-// Vox AI Studio - Final Integrated Script (February 2026)
-const API_BASE = "/.netlify/functions/tts";
-
-// 1. Tab Switching (TTS vs Dubbing)
-function switchTab(mode, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tts-section').style.display = (mode === 'tts') ? 'block' : 'none';
-    document.getElementById('dub-section').style.display = (mode === 'dub') ? 'block' : 'none';
-}
-
-// 2. Strict 50MB Blocking & Validation
-function validateAndUpload(input) {
-    const file = input.files[0];
-    const area = document.getElementById('drop-zone');
-    const status = document.getElementById('upload-text');
-    const btn = document.getElementById('process-btn');
-
-    if (file) {
-        if (file.size > 50 * 1024 * 1024) { // 50MB Hard Limit
-            alert("⚠️ 50MB se badi file allowed nahi hai!");
-            input.value = "";
-            area.style.borderColor = "#ff4444";
-            status.innerText = "File Rejected (Too Large)";
-            btn.disabled = true;
-        } else {
-            area.style.borderColor = "#d4af37";
-            status.innerText = "Ready: " + file.name;
-            btn.disabled = false;
-        }
-    }
-}
-
-// 3. FINAL VOICE GENERATOR (With 20 Voices & Speed Control)
-async function generateVoice() {
+// 100% FREE BROWSER VOICE TEST (No API Key, No Billing Required)
+function generateVoice() {
     const textInput = document.getElementById('text-input');
     const text = textInput.value;
-    
-    // Voice Selection (Male or Female dropdown)
-    const maleVoice = document.getElementById('male-select').value;
-    const femaleVoice = document.getElementById('female-select').value;
-    
-    // Speed Control Logic (0.25x to 4.0x range supported by Google)
-    const speed = parseFloat(document.getElementById('voice-speed')?.value || 1.0);
-
     const btn = document.querySelector('#tts-section .btn-main');
 
-    if (!text.trim()) return alert("Pehle apni kahani likhein!");
+    // Agar text khali hai toh alert do
+    if (!text.trim()) {
+        alert("Pehle apni kahani likhein!");
+        return;
+    }
 
-    // UI Feedback
-    btn.innerText = "Connecting to AI Engine...";
+    // Check karein ki browser free voice support karta hai ya nahi
+    if (!('speechSynthesis' in window)) {
+        alert("Sorry bhai, aapka browser free voice support nahi karta. Chrome use karein.");
+        return;
+    }
+
+    // Button ka text change karein
+    btn.innerText = "Generating Free Voice...";
     btn.disabled = true;
 
     try {
-        const response = await fetch(API_BASE, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                text: text, 
-                voice: maleVoice, // Aap yahan logic daal sakte hain toggle ke liye
-                speed: speed 
-            })
-        });
+        // Pehle se chal rahi koi awaaz band karein
+        window.speechSynthesis.cancel();
 
-        const data = await response.json();
+        // Nayi awaaz banayein
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // Hindi language set karne ki koshish (Browser par depend karega)
+        utterance.lang = 'hi-IN'; 
+        
+        // Speed set karein (agar dropdown hai, nahi toh normal speed)
+        const speed = parseFloat(document.getElementById('voice-speed')?.value || 1.0);
+        utterance.rate = speed;
 
-        if (data.audio) {
-            const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
-            audio.play();
-            btn.innerText = "✅ Playing Realistic Voice...";
-        } else {
-            throw new Error(data.error || "Awaaz generate nahi hui");
-        }
+        // Jab awaaz khatam ho jaye toh button wapas normal kar dein
+        utterance.onend = function() {
+            btn.disabled = false;
+            btn.innerText = "Generate Realistic Voice";
+        };
+
+        // Agar koi error aaye
+        utterance.onerror = function() {
+            btn.disabled = false;
+            btn.innerText = "Generate Realistic Voice";
+            alert("Awaaz play karne mein dikkat aayi.");
+        };
+
+        // Awaaz play karein!
+        window.speechSynthesis.speak(utterance);
+        btn.innerText = "✅ Playing (Free Browser Voice)...";
+
     } catch (e) {
-        // Error handling for Netlify connection
-        alert("Server Connection Failed! Check: \n1. Netlify API Key \n2. Google Billing \n3. Cloud TTS API Enabled");
-    } finally {
-        setTimeout(() => { 
-            btn.disabled = false; 
-            btn.innerText = "Generate Realistic Voice"; 
-        }, 4000);
+        alert("Error: " + e.message);
+        btn.disabled = false;
+        btn.innerText = "Generate Realistic Voice";
     }
-}
-
-// 4. Dubbing Process Logic
-function startProcessing() {
-    const lang = document.getElementById('target-lang').value;
-    alert(`AI Dubbing shuru ho gayi hai: Target Language [${lang}]`);
 }
