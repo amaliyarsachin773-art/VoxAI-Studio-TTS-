@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vox AI Studio - Powered by Camb AI</title>
+    <title>Vox AI Studio - Professional Camb AI Edition</title>
     <style>
         :root { --bg: #050505; --card: #0f0f0f; --accent: #ffffff; --premium: #d4af37; }
         body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
@@ -19,10 +19,9 @@
 
         .editor-container { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 28px; padding: 30px; border: 1px solid #222; }
         
-        /* Unified Dropdown Style */
         select { width: 100%; background: #1a1a1a; color: white; border: 1px solid #333; padding: 16px; border-radius: 12px; outline: none; font-size: 16px; margin-bottom: 15px; cursor: pointer; }
-        optgroup { color: var(--premium); font-weight: bold; }
-        option { color: white; }
+        optgroup { color: var(--premium); font-weight: bold; background: #000; }
+        option { color: white; background: #1a1a1a; }
 
         textarea { width: 100%; height: 200px; background: #1a1a1a; color: white; border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none; font-size: 16px; resize: none; box-sizing: border-box; }
 
@@ -45,35 +44,58 @@
 
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('tts')">Text to Speech</button>
-        <button class="tab-btn" onclick="switchTab('changer')">Voice Changer</button>
+        <button class="tab-btn" onclick="switchTab('dubbing')">AI Dubbing & Changer</button>
     </div>
 
     <div id="tts-section" class="editor-container">
+        
         <select id="voice-select">
-            <optgroup label="Historical & Documentary Voices">
-                <option value="147320">Marcus (Deep Male - Best for History)</option>
-                <option value="147321">Sarah (Authoritative Female)</option>
+            <optgroup label="Historical & Heavy Voices">
+                <option value="147320">1. Marcus (Deep Male - History & Epics)</option>
+                <option value="147321">2. Frank (Studio Male - Heavy Impact)</option>
+                <option value="147322">3. Vikram (Authoritative Indian Male)</option>
+                <option value="147323">4. Sarah (Grave Female Narrator)</option>
+                <option value="147324">5. Meera (Classic Indian Female)</option>
             </optgroup>
-            <optgroup label="Storytelling & Narration">
-                <option value="147322">Heroic Male (Good for Aryan's Character)</option>
-                <option value="147323">Bella (Emotional Female Storyteller)</option>
+            <optgroup label="Storytelling (Long Episodes)">
+                <option value="147325">6. Pankaj (Warm Male Storyteller)</option>
+                <option value="147326">7. Jina (Soft Female Voice)</option>
+                <option value="147327">8. Heroic Male (Action / Drama)</option>
+                <option value="147328">9. Bella (Emotional Female)</option>
+                <option value="147329">10. Kabir (Young Male Character)</option>
+                <option value="147330">11. Ananya (Expressive Female)</option>
+                <option value="147331">12. Rohan (Casual Male Voice)</option>
             </optgroup>
-            <optgroup label="Health & Fitness Guides">
-                <option value="147324">Energetic Male (Fitness Motivation)</option>
-                <option value="147325">Calm Female (Health & Remedies)</option>
+            <optgroup label="Health, Fitness & Education">
+                <option value="147332">13. Energetic Male (Fitness Motivation)</option>
+                <option value="147333">14. Calm Female (Home Remedies)</option>
+                <option value="147334">15. Rahul (Friendly Coach)</option>
+                <option value="147335">16. Priya (Clear Instructor)</option>
+            </optgroup>
+            <optgroup label="General & News Style">
+                <option value="147336">17. Amit (News Style Male)</option>
+                <option value="147337">18. Neha (Upbeat Female)</option>
+                <option value="147338">19. Arjun (Deep Bass Male)</option>
+                <option value="147339">20. Sneha (Professional Female)</option>
             </optgroup>
         </select>
 
-        <textarea id="text-input" placeholder="Yahan apni script likhein..."></textarea>
+        <textarea id="text-input" placeholder="Apni script yahan paste karein..."></textarea>
         <button class="btn-main" onclick="generateVoice()">Generate AI Voice</button>
     </div>
 
-    <div id="changer-section" class="editor-container hidden">
-        <select id="target-voice-select">
-            <option value="147320">Convert to: Deep Male (Documentary)</option>
-            <option value="147321">Convert to: Authoritative Female</option>
-        </select>
+    <div id="dubbing-section" class="editor-container hidden">
         
+        <select id="target-language">
+            <option value="1">Dub in: English</option>
+            <option value="2" selected>Dub in: Hindi</option>
+            <option value="3">Dub in: Marathi</option>
+            <option value="4">Dub in: Gujarati</option>
+            <option value="5">Dub in: Tamil</option>
+            <option value="6">Dub in: Telugu</option>
+            <option value="7">Dub in: Bengali</option>
+        </select>
+
         <label for="file-upload">
             <div class="upload-area" id="drop-zone">
                 <p id="upload-text">📁 Click here to upload Video/Audio<br><small>(Max 50MB)</small></p>
@@ -81,29 +103,29 @@
         </label>
         <input type="file" id="file-upload" class="hidden" accept="video/*,audio/*" onchange="handleFileUpload(this)">
         
-        <button class="btn-main" id="change-voice-btn" disabled onclick="startVoiceChange()">Start Voice Changer</button>
+        <button class="btn-main" id="change-voice-btn" disabled onclick="startDubbing()">Start Voice Dubbing</button>
     </div>
 
     <script>
-        // Tab Switching Logic
+        // Tab Switch Logic
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
             document.getElementById('tts-section').classList.add('hidden');
-            document.getElementById('changer-section').classList.add('hidden');
+            document.getElementById('dubbing-section').classList.add('hidden');
             
             document.getElementById(tab + '-section').classList.remove('hidden');
         }
 
-        // File Upload Handling
+        // File Upload Logic
         function handleFileUpload(input) {
             const file = input.files[0];
             const status = document.getElementById('upload-text');
             const btn = document.getElementById('change-voice-btn');
             
             if (file) {
-                if (file.size > 50 * 1024 * 1024) { // 50MB Limit
+                if (file.size > 50 * 1024 * 1024) {
                     alert("⚠️ 50MB se badi file allowed nahi hai!");
                     input.value = "";
                     status.innerHTML = "❌ File Too Large (Max 50MB)";
@@ -115,19 +137,18 @@
             }
         }
 
-        // CAMB AI - Frontend Connection
+        // CAMB AI - Text to Speech Generation
         async function generateVoice() {
             const text = document.getElementById('text-input').value;
             const voiceId = document.getElementById('voice-select').value;
             const btn = document.querySelector('#tts-section .btn-main');
 
-            if (!text.trim()) return alert("Bhai, pehle script likhein!");
+            if (!text.trim()) return alert("Pehle apni script likhein!");
 
             btn.innerText = "Connecting to Camb AI...";
             btn.disabled = true;
 
             try {
-                // Backend ko call kar raha hai jahan aapki Key safe hai
                 const response = await fetch('/.netlify/functions/tts', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -136,25 +157,70 @@
 
                 const data = await response.json();
 
-                if (data.audio) {
+                if (response.ok && data.audio) {
                     const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
                     audio.play();
                     btn.innerText = "✅ AI Voice Playing!";
                 } else {
-                    throw new Error(data.error || "Awaaz generate nahi hui.");
+                    throw new Error(data.error || "Awaaz generate nahi hui. Backend check karein.");
                 }
             } catch (e) {
-                alert("Server Error: " + e.message);
+                alert("Server Connection Failed: " + e.message);
             } finally {
                 setTimeout(() => { 
                     btn.disabled = false; 
                     btn.innerText = "Generate AI Voice"; 
-                }, 3000);
+                }, 4000);
             }
         }
 
-        function startVoiceChange() {
-            alert("Voice Changer request received! (Iska backend hum agle step mein setup karenge)");
+        // CAMB AI - Dubbing/Voice Changer Processing
+        async function startDubbing() {
+            const fileInput = document.getElementById('file-upload');
+            const targetLang = document.getElementById('target-language').value;
+            const btn = document.getElementById('change-voice-btn');
+            const statusText = document.getElementById('upload-text');
+
+            if (!fileInput.files.length) return alert("Pehle koi Video ya Audio upload karein!");
+
+            btn.innerText = "⏳ Uploading to Server...";
+            btn.disabled = true;
+
+            try {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                
+                reader.onload = async () => {
+                    const base64Data = reader.result.split(',')[1];
+
+                    const response = await fetch('/.netlify/functions/changer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fileName: file.name,
+                            fileData: base64Data,
+                            targetLang: parseInt(targetLang)
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        statusText.innerHTML = "✅ Dubbing Successful!";
+                        btn.innerText = "Dubbing Complete";
+                        alert("File processed successfully!");
+                    } else {
+                        throw new Error(data.error || "Dubbing failed.");
+                    }
+                    btn.disabled = false;
+                };
+            } catch (e) {
+                alert("Error: " + e.message);
+                statusText.innerHTML = "❌ Upload Failed";
+                btn.innerText = "Start Voice Dubbing";
+                btn.disabled = false;
+            }
         }
     </script>
 </body>
