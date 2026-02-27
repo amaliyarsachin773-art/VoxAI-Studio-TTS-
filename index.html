@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vox AI Studio - Professional Documentary TTS</title>
+    <title>Vox AI Studio - Powered by Camb AI</title>
     <style>
         :root { --bg: #050505; --card: #0f0f0f; --accent: #ffffff; --premium: #d4af37; }
-        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 10px; }
+        body { background-color: var(--bg); color: white; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; }
 
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; border-bottom: 1px solid #222; }
         .logo-box { display: flex; align-items: center; gap: 10px; }
@@ -14,19 +14,24 @@
         .logo-text { font-size: 20px; font-weight: 900; }
 
         .nav-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .tab-btn { background: #1a1a1a; color: #888; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; }
-        .tab-btn.active { background: #333; color: white; }
+        .tab-btn { background: #1a1a1a; color: #888; border: none; padding: 12px 20px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: #333; color: white; font-weight: bold; }
 
-        .editor-container { max-width: 500px; margin: 0 auto; background: var(--card); border-radius: 28px; padding: 30px; border: 1px solid #222; }
-        .voice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
-        select, textarea { width: 100%; background: #1a1a1a; color: white; border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none; }
-        textarea { height: 250px; font-size: 16px; resize: none; margin-top: 15px; }
+        .editor-container { max-width: 600px; margin: 0 auto; background: var(--card); border-radius: 28px; padding: 30px; border: 1px solid #222; }
+        
+        /* Unified Dropdown Style */
+        select { width: 100%; background: #1a1a1a; color: white; border: 1px solid #333; padding: 16px; border-radius: 12px; outline: none; font-size: 16px; margin-bottom: 15px; cursor: pointer; }
+        optgroup { color: var(--premium); font-weight: bold; }
+        option { color: white; }
 
-        .btn-main { width: 100%; padding: 18px; background: white; color: black; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; }
+        textarea { width: 100%; height: 200px; background: #1a1a1a; color: white; border: 1px solid #333; padding: 14px; border-radius: 12px; outline: none; font-size: 16px; resize: none; box-sizing: border-box; }
+
+        .btn-main { width: 100%; padding: 18px; background: white; color: black; border-radius: 50px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 15px; transition: 0.3s; }
         .btn-main:disabled { background: #333; color: #777; cursor: not-allowed; }
 
-        .upload-area { border: 2px dashed #333; padding: 40px; text-align: center; border-radius: 20px; margin-top: 15px; cursor: pointer; }
-        .upload-area.error { border-color: #ff4444; }
+        .upload-area { border: 2px dashed #333; padding: 50px 20px; text-align: center; border-radius: 20px; margin-top: 15px; cursor: pointer; background: #111; }
+        .upload-area:hover { border-color: var(--premium); }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -36,134 +41,120 @@
             <div class="logo-icon"><svg viewBox="0 0 24 24" width="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
             <div class="logo-text">Vox AI Studio</div>
         </div>
-        <div style="display:flex; align-items:center; gap:15px;">
-            <span style="color:var(--premium); font-weight:bold; font-size:12px;">CREDITS: 20,000</span>
-        </div>
     </header>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('tts', this)">Text to Speech</button>
-        <button class="tab-btn" onclick="switchTab('dub', this)">AI Dubbing</button>
+        <button class="tab-btn active" onclick="switchTab('tts')">Text to Speech</button>
+        <button class="tab-btn" onclick="switchTab('changer')">Voice Changer</button>
     </div>
 
-    <div class="editor-container">
-        <div id="tts-section">
-            <div style="font-size: 11px; color: #555; font-weight: bold;">STUDIO QUALITY AI VOICES</div>
-            <div class="voice-grid">
-                <select id="male-select">
-                    <option value="hi-IN-Neural2-C">Marcus (Deep Documentary)</option>
-                    <option value="hi-IN-Studio-B">Frank (Realistic Story)</option>
-                    <option value="hi-IN-Wavenet-B">Charlie (Natural)</option>
-                    <option value="hi-IN-Neural2-A">Liam (Professional)</option>
-                    <option value="hi-IN-Studio-C">George (Warm)</option>
-                    <option value="hi-IN-Wavenet-C">Ethan (Action)</option>
-                    <option value="hi-IN-Neural2-B">Noah (Young)</option>
-                    <option value="hi-IN-Studio-A">Sam (Clear)</option>
-                    <option value="hi-IN-Wavenet-D">Arthur (Grave)</option>
-                    <option value="hi-IN-Neural2-D">Thomas (Smooth)</option>
-                </select>
-                <select id="female-select">
-                    <option value="hi-IN-Neural2-F">Bella (Emotional)</option>
-                    <option value="hi-IN-Studio-D">Glinda (High Quality)</option>
-                    <option value="hi-IN-Wavenet-A">Dorothy (Soft)</option>
-                    <option value="hi-IN-Neural2-E">Alice (Narrative)</option>
-                    <option value="hi-IN-Studio-E">Mimi (Dramatic)</option>
-                    <option value="hi-IN-Wavenet-E">Rachel (Anchor)</option>
-                    <option value="hi-IN-Neural2-G">Lily (Crystal)</option>
-                    <option value="hi-IN-Studio-F">Freya (Mystery)</option>
-                    <option value="hi-IN-Wavenet-F">Grace (Calm)</option>
-                    <option value="hi-IN-Neural2-H">Charlotte (Energy)</option>
-                </select>
-            </div>
-            <textarea id="text-input" placeholder="Yahan apni kahani likhein..."></textarea>
-            <button class="btn-main" onclick="generateVoice()">Generate Realistic Voice</button>
-        </div>
+    <div id="tts-section" class="editor-container">
+        <select id="voice-select">
+            <optgroup label="Historical & Documentary Voices">
+                <option value="147320">Marcus (Deep Male - Best for History)</option>
+                <option value="147321">Sarah (Authoritative Female)</option>
+            </optgroup>
+            <optgroup label="Storytelling & Narration">
+                <option value="147322">Heroic Male (Good for Aryan's Character)</option>
+                <option value="147323">Bella (Emotional Female Storyteller)</option>
+            </optgroup>
+            <optgroup label="Health & Fitness Guides">
+                <option value="147324">Energetic Male (Fitness Motivation)</option>
+                <option value="147325">Calm Female (Health & Remedies)</option>
+            </optgroup>
+        </select>
 
-        <div id="dub-section" style="display:none;">
-            <div style="font-size: 11px; color: #555; font-weight: bold;">AI VIDEO DUBBING (MAX 50MB)</div>
-            <select id="target-lang" style="margin-top:10px;">
-                <option value="hi">Hindi</option><option value="en">English</option>
-                <option value="bn">Bengali</option><option value="mr">Marathi</option>
-                <option value="ta">Tamil</option><option value="te">Telugu</option>
-                <option value="gu">Gujarati</option><option value="kn">Kannada</option>
-                <option value="ml">Malayalam</option><option value="es">Spanish</option>
-                <option value="fr">French</option><option value="ja">Japanese</option>
-                <option value="ru">Russian</option><option value="ar">Arabic</option>
-                <option value="de">German</option>
-            </select>
+        <textarea id="text-input" placeholder="Yahan apni script likhein..."></textarea>
+        <button class="btn-main" onclick="generateVoice()">Generate AI Voice</button>
+    </div>
 
-            <div class="upload-area" id="drop-zone" onclick="document.getElementById('file-input').click()">
-                <input type="file" id="file-input" hidden onchange="validateAndUpload(this)" accept="video/*,audio/*">
-                <div style="font-size: 40px;">📂</div>
-                <div id="upload-text" style="font-weight:bold; margin-top:10px;">Click to Upload</div>
-                <div style="font-size: 11px; color:#666;">Maximum allowed: 50MB</div>
+    <div id="changer-section" class="editor-container hidden">
+        <select id="target-voice-select">
+            <option value="147320">Convert to: Deep Male (Documentary)</option>
+            <option value="147321">Convert to: Authoritative Female</option>
+        </select>
+        
+        <label for="file-upload">
+            <div class="upload-area" id="drop-zone">
+                <p id="upload-text">📁 Click here to upload Video/Audio<br><small>(Max 50MB)</small></p>
             </div>
-            <button class="btn-main" id="process-btn" disabled onclick="startProcessing()">Start Dubbing Now</button>
-        </div>
+        </label>
+        <input type="file" id="file-upload" class="hidden" accept="video/*,audio/*" onchange="handleFileUpload(this)">
+        
+        <button class="btn-main" id="change-voice-btn" disabled onclick="startVoiceChange()">Start Voice Changer</button>
     </div>
 
     <script>
-        function switchTab(mode, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tts-section').style.display = (mode === 'tts') ? 'block' : 'none';
-            document.getElementById('dub-section').style.display = (mode === 'dub') ? 'block' : 'none';
+        // Tab Switching Logic
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('tts-section').classList.add('hidden');
+            document.getElementById('changer-section').classList.add('hidden');
+            
+            document.getElementById(tab + '-section').classList.remove('hidden');
         }
 
-        // STRICT 50MB BLOCKING
-        function validateAndUpload(input) {
+        // File Upload Handling
+        function handleFileUpload(input) {
             const file = input.files[0];
-            const area = document.getElementById('drop-zone');
             const status = document.getElementById('upload-text');
-            const btn = document.getElementById('process-btn');
-
+            const btn = document.getElementById('change-voice-btn');
+            
             if (file) {
-                if (file.size > 50 * 1024 * 1024) { // 50MB Check
-                    alert("⚠️ Strict Block: File 50MB se badi hai! Upload allowed nahi hai.");
+                if (file.size > 50 * 1024 * 1024) { // 50MB Limit
+                    alert("⚠️ 50MB se badi file allowed nahi hai!");
                     input.value = "";
-                    area.classList.add('error');
-                    status.innerText = "File Too Large (Rejected)";
+                    status.innerHTML = "❌ File Too Large (Max 50MB)";
                     btn.disabled = true;
                 } else {
-                    area.classList.remove('error');
-                    status.innerText = "Selected: " + file.name;
-                    btn.disabled = false; // Sirf tabhi button chalega jab file 50MB se chhoti ho
+                    status.innerHTML = "✅ Ready: " + file.name;
+                    btn.disabled = false;
                 }
             }
         }
 
-        // REAL VOICE GENERATION (No Dummy Alerts)
+        // CAMB AI - Frontend Connection
         async function generateVoice() {
             const text = document.getElementById('text-input').value;
-            const voice = document.getElementById('male-select').value; // Default to male for test
+            const voiceId = document.getElementById('voice-select').value;
             const btn = document.querySelector('#tts-section .btn-main');
 
-            if (!text.trim()) return alert("Pehle kuch likhein!");
+            if (!text.trim()) return alert("Bhai, pehle script likhein!");
 
-            btn.innerText = "AI is Speaking...";
+            btn.innerText = "Connecting to Camb AI...";
             btn.disabled = true;
 
             try {
+                // Backend ko call kar raha hai jahan aapki Key safe hai
                 const response = await fetch('/.netlify/functions/tts', {
                     method: 'POST',
-                    body: JSON.stringify({ text, voice })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, voice_id: parseInt(voiceId) })
                 });
+
                 const data = await response.json();
-                
+
                 if (data.audio) {
                     const audio = new Audio(`data:audio/mp3;base64,${data.audio}`);
                     audio.play();
-                    btn.innerText = "✅ Playing...";
+                    btn.innerText = "✅ AI Voice Playing!";
+                } else {
+                    throw new Error(data.error || "Awaaz generate nahi hui.");
                 }
             } catch (e) {
-                alert("Server Connection Failed! Check Netlify Key.");
+                alert("Server Error: " + e.message);
             } finally {
-                setTimeout(() => { btn.disabled = false; btn.innerText = "Generate Realistic Voice"; }, 3000);
+                setTimeout(() => { 
+                    btn.disabled = false; 
+                    btn.innerText = "Generate AI Voice"; 
+                }, 3000);
             }
         }
 
-        function startProcessing() {
-            alert("Dubbing started! Processing your 50MB file...");
+        function startVoiceChange() {
+            alert("Voice Changer request received! (Iska backend hum agle step mein setup karenge)");
         }
     </script>
 </body>
