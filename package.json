@@ -1,11 +1,9 @@
 {
-  "name": "vox-ai-studio",
+  "name": "vox-ai-studio-camb",
   "version": "1.0.0",
-  "description": "AI Voice Studio with 20 Realistic Voices",
+  "description": "Professional AI Voice Studio",
   "main": "index.html",
   "dependencies": {
     "axios": "^1.6.0"
-  },
-  "author": "Sachin Amliyar",
-  "license": "ISC"
+  }
 }
